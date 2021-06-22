@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>The Home Page</h1>
+  <button id="signOut">Sign Out</button>
+  <form>
+    <p>
+      <label for="text">Item</label>
+      <input type="text" name="text" id="text">
+    </p>
+    <p>
+      <button id="addItem">Add Item</button>
+    </p>
+  </form>
+  <ul id="items"></ul>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+
+    document.getElementById('signOut').addEventListener('click', event => {
+      localStorage.removeItem('token')
+      window.location = '/login.html'
+    })
+
+    document.getElementById('addItem').addEventListener('click', event => {
+      event.preventDefault()
+      axios.post('/api/items', {
+        text: document.getElementById('text').value,
+        isDone: false
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+        .then(({ data: item }) => {
+          const itemElem = document.createElement('li')
+          itemElem.innerHTML = `
+          <p>Text: ${item.text}</p>
+          <p>isDone: ${item.isDone}</p>
+          `
+          document.getElementById('items').append(itemElem)
+        })
+        .catch(err => window.location = '/login.html')
+    })
+
+    axios.get('/api/items', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(({ data: items }) => {
+        items.forEach(item => {
+          const itemElem = document.createElement('li')
+          itemElem.innerHTML = `
+          <p>Text: ${item.text}</p>
+          <p>isDone: ${item.isDone}</p>
+          `
+          document.getElementById('items').append(itemElem)
+        })
+      })
+      .catch(err => window.location = '/login.html')
+
+  </script>
+</body>
+</html>
