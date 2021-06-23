@@ -1,0 +1,72 @@
+<br>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-2 g-4" id="content">
+    {{!-- stuff goes here --}}
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const renderBlog = () => {
+    axios.get('api/blogs/user', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(({data: blogs}) => {
+        document.getElementById('content').innerHTML = ''
+        blogs.forEach(blog => {
+          console.log(blog)
+          axios.get(`/api/users/${blog.user_id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+            .then((user) => {
+              
+              let post = document.createElement('div')
+              post.innerHTML = `
+              <div class="col">
+                <div class="card border-dark mb-3" style="width: 18rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">${blog.title}</h5>
+                    <h7 class="card-subtitle mb-2 text-muted">Created by ${user.data.name} at ${blog.createdAt}</h7>
+                    <p class="card-text">${blog.text}</p>
+                  </div>
+                  <div class="card-footer">
+                    <a href="/blog/${blog.id}" class="btn btn-primary">View this Post</a>
+                    <a href="/update/${blog.id}" class="btn btn-primary">Update</a>
+                    <button data-blogid="${blog.id}" class="delete btn btn-primary">X</button>
+                  </div>
+                </div>
+              </div>
+            `
+              document.getElementById('content').append(post)
+            })
+            .catch(err => console.log(err))
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        //window.location = '/login'
+      })
+  }
+  // function call
+  renderBlog()
+
+  document.addEventListener('click', event => {
+    if (event.target.classList.contains('delete')) {
+      let blogid = event.target.getAttribute('data-blogid')
+      axios.delete(`/api/blogs/${blogid}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(() => {
+        window.location = '/dashboard'
+      })
+      .catch(err => console.log(err))
+    }
+  })
+</script>

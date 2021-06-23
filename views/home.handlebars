@@ -1,0 +1,53 @@
+<br>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-2 g-4" id="content">
+    {{!-- stuff goes here --}}
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const renderBlogs = () => {
+    axios.get('api/blogs', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(({data: blogs}) => {
+        document.getElementById('content').innerHTML = ''
+        blogs.forEach(blog => {
+          axios.get(`/api/users/${blog.user_id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+            .then(user => {
+              let post = document.createElement('div')
+              post.innerHTML = `
+              <div class="col">
+                <div class="card border-dark mb-3" style="width: 18rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">${blog.title}</h5>
+                    <h7 class="card-subtitle mb-2 text-muted">Created by ${user.data.name} at ${blog.createdAt}</h7>
+                    <p class="card-text">${blog.text}</p>
+                  </div>
+                  <div class="card-footer">
+                    <a href="/blog/${blog.id}" class="btn btn-primary">View this Post</a>
+                  </div>
+                </div>
+              </div>
+            `
+              document.getElementById('content').append(post)
+            })
+            .catch(err => console.log(err))
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        window.location = '/login'
+      })
+  }
+  // function call
+  renderBlogs()
+</script>

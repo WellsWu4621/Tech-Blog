@@ -4,21 +4,15 @@ const sequelize = require('../db')
 class Blog extends Model { }
 
 Blog.init({
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true,
-  },
   title: DataTypes.STRING,
   text: DataTypes.TEXT,
-  user_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'user',
-      key: 'id'
-    }
-  }
-}, { sequelize, modelName: 'blog' })
+  // user_id: {
+  //   type: DataTypes.INTEGER,
+  //   references: {
+  //     model: 'Users',
+  //     key: 'id'
+  //   }
+  // }
+}, { sequelize, modelName: 'blogs', timeStamps: true })
 
 module.exports = Blog

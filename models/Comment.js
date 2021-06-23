@@ -11,20 +11,13 @@ Comment.init({
     autoIncrement: true,
   },
   comment_text: DataTypes.TEXT,
-  user_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'user',
-      key: 'id'
-    }
-  },
   blog_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'blog',
+      model: 'blogs',
       key: 'id'
     }
   },
-}, { sequelize, modelName: 'comment' })
+}, { sequelize, modelName: 'comment', timeStamps: true })
 
 module.exports = Comment

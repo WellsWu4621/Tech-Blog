@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { User, Blog, Comment } = require('../models')
 const jwt = require('jsonwebtoken')
+const sequelize = require('../db')
 
 router.post('/users/register', (req, res) => {
   const { name, email, username } = req.body
@@ -17,23 +18,9 @@ router.post('/users/login', (req, res) => {
   })
 })
 
-router.get("/users", passport.authenticate('jwt'), (req, res) => {
-  User.findAll({
-    attributes: ["id", "username", "email"],
-    include: [
-      {
-        model: Blog,
-        as: "blogs",
-        attributes: ["id", "title", "text"],
-      },
-      {
-        model: Comment,
-        as: "comments",
-        attributes: ["id", "comment_text", "post_id"],
-      },
-    ],
-  })
-    .then(userblogs => res.json(userblogs))
+router.get('/users/:id', (req, res) => {
+  User.findOne({ where: { id: req.params.id } })
+    .then(user => res.json(user))
     .catch(err => console.log(err))
 })
 

@@ -1,0 +1,40 @@
+<br>
+<div class="container">
+  <div class="row">
+    <div class="card">
+      <form>
+        <div class="mb-3">
+          <label for="postTitle" class="form-label">Title</label>
+          <input type="title" class="form-control" id="postTitle" placeholder="My Post Title">
+        </div>
+        <div class="mb-3">
+          <label for="postText" class="form-label">Post Text</label>
+          <textarea class="form-control" id="postText" rows="3"></textarea>
+        </div>
+        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('submit').addEventListener('click', event => {
+    event.preventDefault()
+    // create new blog post
+    console.log(document.getElementById('postText').value)
+    axios.post('/api/blogs', {
+      title: document.getElementById('postTitle').value,
+      text: document.getElementById('postText').value
+    }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then((post) => {
+        console.log('ping')
+        window.location = `/dashboard`
+      })
+      .catch(err => console.log(err))
+  })
+</script>

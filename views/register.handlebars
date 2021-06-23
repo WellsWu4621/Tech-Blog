@@ -1,0 +1,43 @@
+<div class="card text-center position-absolute top-50 start-50 translate-middle" style="width: 50%;">
+  <div class="card-body">
+    <h5 class="card-title">Register</h5>
+      <form class="card-text">
+        <p>
+          <label class="form-label" for="name">name</label>
+          <input class="form-control" type="text" name="name" id="name">
+        </p>
+        <p>
+          <label class="form-label" for="email">email</label>
+          <input class="form-control" type="email" name="email" id="email">
+        </p>
+        <p>
+          <label class="form-label" for="username">username</label>
+          <input class="form-control" type="text" name="username" id="username">
+        </p>
+        <p>
+          <label class="form-label" for="password">password</label>
+          <input class="form-control" type="password" name="password" id="password">
+        </p>
+        <p>
+          <button class="btn btn-primary" id="register">Sign Up</button>
+          <a href="/login" class="btn btn-primary">Already a User? Login Here!</a>
+        </p>
+      </form>
+    
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('register').addEventListener('click', event => {
+    event.preventDefault()
+    axios.post('/api/users/register', {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      username: document.getElementById('username').value,
+      password: document.getElementById('password').value
+    })
+      .then(() => window.location = '/login')
+      .catch(err => console.error(err))
+  })
+</script>

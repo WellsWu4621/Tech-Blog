@@ -3,10 +3,18 @@ require('dotenv').config()
 const express = require('express')
 const { join } = require('path')
 const passport = require('passport')
-const { User, Item } = require('./models')
+const { User, Blog, Comment } = require('./models')
 const { Strategy: JWTStrategy, ExtractJwt } = require('passport-jwt')
 
+// handlebars stuff
+const exphbs = require('express-handlebars')
+const hbs = exphbs.create({})
+
 const app = express()
+
+// more handlebars
+app.engine('handlebars', hbs.engine)
+app.set('view engine', 'handlebars')
 
 app.use(express.static(join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
@@ -31,11 +39,11 @@ passport.deserializeUser((id, done) => {
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.SECRET
-}, ({ id }, cb) => User.findOne({ where: { id }, include: [Item] })
+}, ({ id }, cb) => User.findOne({ where: { id }, include: [Blog] })
   .then(user => cb(null, user))
   .catch(err => cb(err, null))))
 
-app.use(require('./routes'))
+app.use(require('./controllers'))
 // auth boilerplate end
 
 

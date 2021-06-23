@@ -1,0 +1,77 @@
+<br>
+<div class="container">
+  {{!-- set the passed through blog id as a data- value to reference later --}}
+  <div class="row" id="content" data-blog_id="{{editid}}">
+    {{!-- render here --}}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  // get id from data set value
+  const blog_id = document.getElementById('content').getAttribute('data-blog_id')
+  const renderEditPost = () => {
+    axios.get(`/api/blogs/${blog_id}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(({data: blog}) => {
+        console.log(blog)
+        document.getElementById('content').innerHTML = ''
+        axios.get(`/api/users/${blog.user_id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+          .then(user => {
+            console.log(user)
+            let post = document.createElement('div')
+            post.innerHTML = `
+              <div class="col">
+                <div class="card border-dark mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <input type="text" class="form-control" id="Title" placeholder='${ blog.title }'>
+                    </h5>
+                    <h7 class="card-subtitle mb-2 text-muted">Created by ${user.data.name} at ${blog.createdAt}</h7>
+                    <p class="card-text">
+                      <textarea type="text" class="form-control" id="Text">${blog.text }
+                      </textarea>
+                    </p>
+                  </div>
+                  <div class="card-footer">
+                    <button class="btn btn-primary" id="submit">Submit Changes</button>
+                  </div>
+                </div>
+              </div>
+            `
+            document.getElementById('content').append(post)
+          })
+          .catch(err => console.log(err))
+      })
+      .catch((err) => {
+        console.log(err)
+        //window.location = '/login'
+      })
+  }
+  // function call
+  renderEditPost()
+
+  document.getElementById('submit').addEventListener('click', event => {
+      event.preventDefault()
+      axios.put(`/api/blogs/${blog_id}`, {
+        title: document.getElementById('Title').value,
+        text: document.getElementById('Text').value
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+        .then(_ => {
+          renderEditPost()
+          window.location = '/dashboard'
+        })
+        .catch(err => console.log(err))
+    })
+</script>

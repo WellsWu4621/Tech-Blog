@@ -1,0 +1,106 @@
+<br>
+<div class="container">
+  {{!-- set the passed through blog id as a data- value to reference later --}}
+  <div class="row" id="content" data-blog_id="{{blogid}}">
+    {{!-- render here --}}
+  </div>
+</div>
+<div class="container">
+  <div class="row card">
+    <form>
+      <div class="mb-3">
+        <label for="commentText" class="form-label">Write a Comment</label>
+        <textarea class="form-control" id="commentText" rows="3"></textarea>
+      </div>
+      <button id="submitComment" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+  <div class="row" id="Commentcontent">
+    {{!-- render comments here --}}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  // get id from data set value
+  const blog_id = document.getElementById('content').getAttribute('data-blog_id')
+  const renderBlog = () => {
+    axios.get(`/api/blogs/${blog_id}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(({data: blog}) => {
+        document.getElementById('content').innerHTML = ''
+          console.log(blog)
+        axios.get(`/api/users/${blog.user_id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+          .then(user => {
+            console.log(user)
+            let post = document.createElement('div')
+            post.innerHTML = `
+              <div class="col">
+                <div class="card border-dark mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title">${blog.title}</h5>
+                    <h7 class="card-subtitle mb-2 text-muted">Created by ${user.data.name} at ${blog.createdAt}</h7>
+                    <p class="card-text">${blog.text}</p>
+                  </div>
+                </div>
+              </div>
+            `
+            document.getElementById('content').append(post)
+            blog.comments.forEach(comment => {
+              document.getElementById('Commentcontent').innerHTML = ''
+              axios.get(`/api/users/${comment.user_id}`, {
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+                .then(commenter => {
+                  let comments = document.createElement('div')
+                  comments.innerHTML = `
+                    <div class="col">
+                      <div class="card border-dark mb-3">
+                        <div class="card-body">
+                          <blockquote class="blockquote mb-0">
+                            <p>${comment.comment_text}</p>
+                            <footer class="blockquote-footer">${commenter.data.name} at ${comment.createdAt}</footer>
+                          </blockquote>
+                        </div>
+                      </div>
+                    </div>
+                  `
+                  document.getElementById('Commentcontent').append(comments)
+                })
+                .catch(err => console.log(err))
+            })
+
+          })
+          .catch(err => console.log(err))
+      })
+      .catch((err) => {
+        console.log(err)
+        window.location = '/login'
+      })
+  }
+  // function call
+  renderBlog()
+
+  document.getElementById('submitComment').addEventListener('click', event => {
+    event.preventDefault()
+    axios.post('/api/comments', {
+      comment_text: document.getElementById('commentText').value,
+      blog_id: blog_id
+    }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(() => renderBlog())
+    .catch(err => console.log(err))
+  })
+</script>
