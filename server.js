@@ -47,7 +47,7 @@ app.use(require('./controllers'))
 // auth boilerplate end
 
 
-require('./db')
+require('./db/config')
   .sync()
   .then(() => app.listen(process.env.PORT || 3000))
   .catch(err => console.log(err))

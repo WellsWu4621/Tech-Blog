@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { User, Blog, Comment } = require('../models')
 const passport = require('passport')
-const sequelize = require('../db')
+const sequelize = require('../db/config')
 
 // login
 router.get('/login', (req, res) => {

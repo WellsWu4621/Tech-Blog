@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { User, Blog, Comment } = require('../models')
 const jwt = require('jsonwebtoken')
-const sequelize = require('../db')
+const sequelize = require('../db/config')
 
 router.post('/users/register', (req, res) => {
   const { name, email, username } = req.body
