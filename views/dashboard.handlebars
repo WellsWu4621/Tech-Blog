@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
   const renderBlog = () => {
-    axios.get('api/blogs/user', {
+    axios.get('/api/blogs/user', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
