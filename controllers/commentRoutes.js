@@ -41,7 +41,7 @@ router.post('/comments', passport.authenticate('jwt'), (req, res) => {
 })
 
 router.put('/comments/:id', passport.authenticate('jwt'), (req, res) => {
-  Comment.create({
+  Comment.update({
     comment_text: req.body.comment_text,
   },
     {

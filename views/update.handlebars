@@ -16,7 +16,7 @@
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(({data: blog}) => {
+      .then(({ data: blog }) => {
         console.log(blog)
         document.getElementById('content').innerHTML = ''
         axios.get(`/api/users/${blog.user_id}`, {
@@ -32,16 +32,16 @@
                 <div class="card border-dark mb-3">
                   <div class="card-body">
                     <h5 class="card-title">
-                      <input type="text" class="form-control" id="Title" placeholder='${ blog.title }'>
+                      <input type="text" class="form-control" id="Title" placeholder='${blog.title}'>
                     </h5>
                     <h7 class="card-subtitle mb-2 text-muted">Created by ${user.data.name} at ${blog.createdAt}</h7>
                     <p class="card-text">
-                      <textarea type="text" class="form-control" id="Text">${blog.text }
+                      <textarea type="text" class="form-control" id="Text">${blog.text}
                       </textarea>
                     </p>
                   </div>
                   <div class="card-footer">
-                    <button class="btn btn-primary" id="submit">Submit Changes</button>
+                    <button class="submit btn btn-primary" id="submit">Submit Changes</button>
                   </div>
                 </div>
               </div>
@@ -58,8 +58,10 @@
   // function call
   renderEditPost()
 
-  document.getElementById('submit').addEventListener('click', event => {
-      event.preventDefault()
+  document.addEventListener('click', event => {
+    event.preventDefault()
+      console.log(event.target)
+    if (event.target.classList.contains('submit')) {
       axios.put(`/api/blogs/${blog_id}`, {
         title: document.getElementById('Title').value,
         text: document.getElementById('Text').value
@@ -68,10 +70,11 @@
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
-        .then(_ => {
+        .then(() => {
           renderEditPost()
           window.location = '/dashboard'
         })
         .catch(err => console.log(err))
-    })
+    }
+  })
 </script>
