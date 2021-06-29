@@ -15,7 +15,7 @@
   - [Questions](#-questions)
 
   ## Installation:  
-  1. go to the Github repo. 2. Clone the repo. 3. install the dependencies. 4. Run with: node index.js in the terminal
+  1. go to the Github repo. 2. Clone the repo. 3. install the dependencies. 4. Run with: node server.js in the terminal
 
   ## Usage:  
   Leave Blog posts
@@ -29,7 +29,7 @@
   ## Tests:  
   Leaving Blog posts
 
-  ![Tech-Blog](./image/image)
+  ![Tech-Blog](./image/techblog.png)
   
   ## Questions:  
   Contact Me: [Github](https://gist.github.com/WellsWu4621), or Email Me @wellswu.dev@gmail.com  
